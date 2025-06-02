@@ -19,13 +19,14 @@ class Solution {
 
         if (nums[mid] == target) {
             return mid; // Target found
-        } else if (nums[mid] < target) {
+        } 
+        if (nums[mid] < target) {
             return binarySearch(nums, target, mid + 1, right); // Search in the right half
-        } else {
-            return binarySearch(nums, target, left, mid - 1); // Search in the left half
+        } 
+        return binarySearch(nums, target, left, mid - 1); // Search in the left half
         }
     }
 
-}
+
 // @lc code=end
 
