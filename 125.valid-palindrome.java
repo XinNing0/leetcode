@@ -38,3 +38,9 @@ class Solution {
 }
 // @lc code=end
 
+//Time Complexity: O(n)
+//Space Complexity: O(1)
+// This solution uses two pointers to check if the string is a palindrome, ignoring non-alphanumeric characters and case differences.
+// It iterates through the string from both ends, moving inward while checking for valid characters and comparing them in a case-insensitive manner.
+// The helper methods `isValidChar` and `isEqualIgnoreCase` are used to determine if a character is alphanumeric and to compare characters in a case-insensitive manner, respectively.
+
