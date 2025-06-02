@@ -22,4 +22,7 @@ class Solution {
     }
 }
 // @lc code=end
+//time complexity: O(n^2)
+//space complexity: O(1)
+// This solution uses a brute force approach to find the two indices of the numbers that add up to the target.
 
