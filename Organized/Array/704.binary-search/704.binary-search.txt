@@ -1,0 +1,5 @@
+Binary Search (Easy)
+Tags: Array, Binary Search
+
+My Notes:
+- 
