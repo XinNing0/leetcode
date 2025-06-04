@@ -1,13 +1,13 @@
 import os
-import shutil
 import requests
 import re
+import shutil
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
 
-SOURCE_DIR = "/Users/xinning/Desktop/LC"
-TARGET_DIR = os.path.join(SOURCE_DIR, "Organized")
+SOURCE_DIR = "/Users/xinning/Desktop/LC/Problems"
+TARGET_DIR = "/Users/xinning/Desktop/LC/Organized"
 API_URL = "https://leetcode.com/graphql"
 
 HEADERS = {
@@ -51,7 +51,6 @@ def sanitize_folder_name(name):
     return re.sub(r'[^\w\- ]', '', name)
 
 def process_file(file_path):
-    # file_path example: /Users/xinning/Desktop/LC/1.two-sum.java
     file = os.path.basename(file_path)
     if not (file.endswith(".java") or file.endswith(".py")):
         return
@@ -59,26 +58,6 @@ def process_file(file_path):
     number, slug, ext = slugify_title(file)
     if not slug or not number:
         print(f"Skipping: {file} (filename format invalid)")
-        return
-
-    # Check if file already organized and up-to-date
-    folder_name = f"{number}.{slug}"
-    found_existing = False
-    if os.path.exists(TARGET_DIR):
-        for category in os.listdir(TARGET_DIR):
-            category_path = os.path.join(TARGET_DIR, category)
-            if not os.path.isdir(category_path):
-                continue
-            dest_folder = os.path.join(category_path, folder_name)
-            dest_file_path = os.path.join(dest_folder, file)
-            if os.path.exists(dest_file_path):
-                src_mtime = os.path.getmtime(file_path)
-                dest_mtime = os.path.getmtime(dest_file_path)
-                if dest_mtime >= src_mtime:
-                    print(f"⏭️ Skipping {file}, already organized and up-to-date in category '{category}'.")
-                    found_existing = True
-                    break
-    if found_existing:
         return
 
     print(f"📡 Fetching data for slug: {slug}")
@@ -93,38 +72,46 @@ def process_file(file_path):
     category = sanitize_folder_name(category)
     difficulty = problem_data["difficulty"]
 
+    folder_name = f"{number}.{slug}"
     dest_folder = os.path.join(TARGET_DIR, category, folder_name)
     os.makedirs(dest_folder, exist_ok=True)
 
-    dest_file_path = os.path.join(dest_folder, file)
-    shutil.copy2(file_path, dest_file_path)  # copy file with metadata
+    # 复制代码文件到 Organized 目录
+    dest_code_path = os.path.join(dest_folder, file)
+    if not os.path.exists(dest_code_path):
+        shutil.copy2(file_path, dest_code_path)
+        print(f"📂 Copied code file to: {dest_code_path}")
+    else:
+        print(f"⏭️ Code file already exists: {dest_code_path}")
 
-    # Note file name matches problem base name with .txt extension
+    # 生成笔记文件
     base_filename = os.path.splitext(file)[0]
-    notes_path = os.path.join(dest_folder, f"{base_filename}.txt")
+    note_ext = ext.replace('.', '') + ".txt"
+    notes_path = os.path.join(dest_folder, f"{base_filename}.{note_ext}")
     if not os.path.exists(notes_path):
         with open(notes_path, "w") as f:
             f.write(f"{title} ({difficulty})\n")
             f.write(f"Tags: {', '.join(tag['name'] for tag in tags)}\n\n")
             f.write("My Notes:\n")
             f.write("- ")
-
-    print(f"✅ Organized {file} → {dest_folder}")
+        print(f"📝 Created note: {notes_path}")
+    else:
+        print(f"⏭️ Note already exists: {notes_path}")
 
 class LCFileHandler(FileSystemEventHandler):
     def on_created(self, event):
         if not event.is_directory:
-            print(f"Detected new file: {event.src_path}")
+            print(f"🆕 Detected new file: {event.src_path}")
             process_file(event.src_path)
 
     def on_modified(self, event):
         if not event.is_directory:
-            print(f"Detected modified file: {event.src_path}")
+            print(f"✏️ Detected modified file: {event.src_path}")
             process_file(event.src_path)
 
 def main():
     if not os.path.exists(SOURCE_DIR):
-        print(f"Source directory {SOURCE_DIR} does not exist!")
+        print(f"❌ Source directory {SOURCE_DIR} does not exist!")
         return
 
     event_handler = LCFileHandler()
