@@ -6,7 +6,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
 
-SOURCE_DIR = "/Users/xinning/Desktop/LC/Problems"
+SOURCE_DIR = "/Users/xinning/Desktop/LC"
 TARGET_DIR = "/Users/xinning/Desktop/LC/Organized"
 API_URL = "https://leetcode.com/graphql"
 
