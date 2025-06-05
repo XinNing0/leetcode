@@ -4,6 +4,8 @@
  * [1356] Sort Integers by The Number of 1 Bits
  */
 
+import java.util.Arrays;
+
 // @lc code=start
 class Solution {
     public int[] sortByBits(int[] arr) {
