@@ -35,4 +35,7 @@ class Solution {
     }
 }
 // @lc code=end
+//Time complexity: O(n)
+//Space complexity: O(1) since we are modifying the input array in place
+//This solution uses the input array as a hash map to mark the presence of numbers, which allows us to find the missing numbers efficiently without using extra space.
 

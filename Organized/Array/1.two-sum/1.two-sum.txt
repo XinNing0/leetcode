@@ -2,4 +2,7 @@ Two Sum (Easy)
 Tags: Array, Hash Table
 
 My Notes:
-- 
+
+Two ways slove the problem.
+1.two pointers
+2.hashmap
